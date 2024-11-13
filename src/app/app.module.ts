@@ -57,7 +57,7 @@ import { SliderComponent } from "./rxjs/slider/slider.component";
     AppComponent,
     FirstComponent,
     SecondComponent,
-    ColorComponent,
+    // ColorComponent,
     TwoComponent,
     CardProfilComponent,
     PereComponent,
