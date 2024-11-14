@@ -1,0 +1,31 @@
+/* todo.component.css */
+
+.todo-form {
+    margin-bottom: 1rem;
+  }
+  
+  .kanban-board {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .kanban-column {
+    flex: 1;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 1rem;
+  }
+  
+  .todo-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .todo-card h4 {
+    margin-top: 0;
+  }
+  

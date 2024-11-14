@@ -1,18 +1,68 @@
-<div class="row">
-  <div class="col">
-    <ol class="list-group">
-      @for (todo of todos; track todo) {
-        <li class="list-group-item">
-          {{todo.name}} : {{todo.content}}
-          <i (click)="deleteTodo(todo)" class="fa fa-trash" aria-hidden="true"></i>
-        </li>
-      }
-    </ol>
+<!-- todo.component.html -->
+<div class="row bg-info px-3 py-5 rounded">
+  <div class="d-flex gap-3 todo-form">
+    <input
+      [(ngModel)]="todo.name"
+      type="text"
+      class="form-control"
+      placeholder="name"
+    />
+    <input
+      [(ngModel)]="todo.content"
+      type="text"
+      class="form-control"
+      placeholder="content"
+    />
+    <button
+      (click)="addTodo()"
+      [disabled]="!todo.name.trim() || !todo.content.trim()"
+      class="btn btn-danger m-2"
+    >
+      add
+    </button>
   </div>
-  <div class="col">
-    name: <input [(ngModel)]="todo.name" type="text" class="form-control">
-    content: <input [(ngModel)]="todo.content" type="text" class="form-control">
-    <button (click)="addTodo()" [disabled]="!todo.name.trim() || !todo.content.trim()"
-    class="btn btn-primary m-2">add</button>
+
+<div class="kanban-board d-flex justify-content-between gap-3 mt-3">
+  <div class="kanban-column">
+    <h3>Waiting</h3>
+    @for (todo of getByStatus('waiting'); track todo) {
+      <div class="todo-card">
+        <h4>{{ todo.name }}</h4>
+        <p>{{ todo.content }}</p>
+        <button (click)="changeStatus(todo)" class="btn btn-warning">In Progress</button>
+      </div>
+    }
+  </div>
+
+  <div class="kanban-column">
+    <h3>In Progress</h3>
+    @for (todo of getByStatus('in progress'); track todo) {
+      <div class="todo-card">
+        <h4>{{ todo.name }}</h4>
+        <p>{{ todo.content }}</p>
+        <button (click)="changeStatus(todo)" class="btn btn-info">In Review</button>
+      </div>
+    }
+  </div>
+  
+  <div class="kanban-column">
+    <h3>In Review</h3>
+    @for (todo of getByStatus('in review'); track todo) {
+      <div class="todo-card">
+        <h4>{{ todo.name }}</h4>
+        <p>{{ todo.content }}</p>
+        <button (click)="changeStatus(todo)" class="btn btn-success">Done</button>
+      </div>
+    }
+  </div>
+
+  <div class="kanban-column">
+    <h3>Done</h3>
+    @for (todo of getByStatus('done'); track todo) {
+      <div class="todo-card">
+        <h4>{{ todo.name }}</h4>
+        <p>{{ todo.content }}</p>
+      </div>
+    }
   </div>
 </div>
