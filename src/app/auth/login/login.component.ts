@@ -6,13 +6,12 @@ import { ToastrService } from 'ngx-toastr';
 import { APP_ROUTES } from '../../../config/routes.config';
 import { FormsModule } from '@angular/forms';
 
-
 @Component({
-    selector: 'app-login',
-    templateUrl: './login.component.html',
-    styleUrls: ['./login.component.css'],
-    standalone: true,
-    imports: [FormsModule],
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css'],
+  standalone: true,
+  imports: [FormsModule],
 })
 export class LoginComponent {
   private authService = inject(AuthService);
@@ -25,10 +24,11 @@ export class LoginComponent {
   constructor() {}
   login(credentials: CredentialsDto) {
     this.authService.login(credentials).subscribe({
-      next: (response) => {
-        localStorage.setItem('token', response.id);
-        this.toastr.success(`Bienvenu chez vous :)`);
-        this.router.navigate([APP_ROUTES.cv]);
+      next: (success) => {
+        if (success) {
+          this.toastr.success(`Bienvenu chez vous :)`);
+          this.router.navigate([APP_ROUTES.cv]);
+        }
       },
       error: (error) => {
         this.toastr.error('Veuillez vérifier vos credentials');

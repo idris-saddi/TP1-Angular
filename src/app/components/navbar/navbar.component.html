@@ -18,18 +18,16 @@
         <a class="nav-link" [routerLink]="['todo']" routerLinkActive="active text-primary">Todo</a>
         <a class="nav-link" [routerLink]="['word']" routerLinkActive="active text-primary">Word</a>
         <a class="nav-link" [routerLink]="['admin', 'color']" routerLinkActive="active text-primary">Color</a>
-        <a
-          class="nav-link"
-          [routerLink]="['ttc']"
-          routerLinkActive="active text-primary"
-          >TTC</a
-        >
         <a class="nav-link" [routerLink]="['rh']" routerLinkActive="active text-primary">Rh</a>
         @if (!authService.isAuthenticated()) {
         <a class="nav-link" [routerLink]="['login']" routerLinkActive="active text-primary">Login</a>
-        }
-        @if (authService.isAuthenticated()) {
-        <a class="nav-link" (click)="logout()">Logout</a>
+        } @if (authService.isAuthenticated()) {
+        <div class="navbar-nav ms-auto">
+          <span class="navbar-text me-3">{{
+            authService.userInfo()?.email
+            }}</span>
+          <a class="nav-link" (click)="logout()">Logout</a>
+        </div>
         }
       </div>
     </div>
