@@ -5,31 +5,32 @@ import { Cv } from '../model/cv';
   providedIn: 'root',
 })
 export class EmbaucheService {
-  // Signal to hold the list of hired candidates
   private embauchees = signal<Cv[]>([]);
 
   constructor() {}
 
   /**
-   * Returns the list of hired candidates.
-   * @returns Cv[]
+   *
+   * Retourne la liste des embauchees
+   *
+   * @returns CV[]
    */
   getEmbauchees(): Cv[] {
-    return this.embauchees(); // Call the signal to get its value
+    return this.embauchees();
   }
 
   /**
-   * Hires a person if they are not already hired.
-   * Otherwise, returns false.
-   * @param cv - Cv
+   *
+   * Embauche une personne si elle ne l'est pas encore
+   * Sinon il retourne false
+   *
+   * @param cv : Cv
    * @returns boolean
    */
   embauche(cv: Cv): boolean {
-    // Get the current value of the signal
     const currentEmbauchees = this.embauchees();
-    if (!currentEmbauchees.includes(cv)) {
-      // Update the signal with the new value
-      this.embauchees.set([...currentEmbauchees, cv]);
+    if (currentEmbauchees.indexOf(cv) === -1) {
+      this.embauchees.set([...currentEmbauchees, cv]); 
       return true;
     }
     return false;
