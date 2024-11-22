@@ -1,139 +1,148 @@
-import { Injectable, inject } from "@angular/core";
-import { Cv } from "../model/cv";
-import { Observable, Subject } from "rxjs";
-import { HttpClient, HttpParams } from "@angular/common/http";
-import { API } from "../../../config/api.config";
+import { Injectable, signal, computed, inject } from '@angular/core';
+import { Cv } from '../model/cv';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { API } from '../../../config/api.config';
+import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class CvService {
   private http = inject(HttpClient);
 
-  private cvs: Cv[] = [];
-  /**
-   * Le subject permettant de créer le flux des cvs sélectionnés
-   */
-  #selectCvSuject$ = new Subject<Cv>();
-  /**
-   * Le flux des cvs sélectionnés
-   */
-  selectCv$ = this.#selectCvSuject$.asObservable();
+  private cvs = signal<Cv[]>([]);
 
-  /** Inserted by Angular inject() migration for backwards compatibility */
-  constructor(...args: unknown[]);
+  /**
+   * Signal for the sfelected CV (if any).
+   */
+  private selectedCv = signal<Cv | null>(null);
+
   constructor() {
-    this.cvs = [
-      new Cv(1, "aymen", "sellaouti", "teacher", "as.jpg", "1234", 40),
-      new Cv(2, "skander", "sellaouti", "enfant", "       ", "1234", 4),
+    const fakeCVs: Cv[] = [
+      new Cv(1, 'aymen', 'sellaouti', 'teacher', 'as.jpg', '1234', 40),
+      new Cv(2, 'skander', 'sellaouti', 'enfant', '       ', '1234', 4),
     ];
+    this.cvs.set(fakeCVs);
   }
 
   /**
-   *
-   * Retourne un liste fictive de cvs
-   *
-   * @returns CV[]
-   *
+   * Returns the fake CVs stored locally.
+   * @returns Cv[]
    */
   getFakeCvs(): Cv[] {
-    return this.cvs;
+    return this.cvs();
   }
 
   /**
-   *
-   * Retourne la liste des cvs de l'API
-   *
-   * @returns CV[]
-   *
+   * Returns the list of CVs from the API.
+   * @returns Observable<Cv[]>
    */
   getCvs(): Observable<Cv[]> {
-    return this.http.get<Cv[]>(API.cv);
+    return this.http.get<Cv[]>(API.cv).subscribe({
+      next: (fetchedCvs) => {
+        this.cvs = fetchedCvs;
+      },
+      error: () => {
+        this.toastr.error(`
+            Attention!! Les données sont fictives, problème avec le serveur.
+            Veuillez contacter l'admin.`);
+      },
+    });
   }
 
   /**
-   *
-   * supprime un cv par son id de l'API
-   *
-   * @param id: number
-   * @returns CV[]
-   *
+   * Deletes a CV by its ID using the API.
+   * @param id - ID of the CV to delete.
+   * @returns Observable<any>
    */
   deleteCvById(id: number): Observable<any> {
-    return this.http.delete<any>(API.cv + id);
-  }
-
-  addCv(cv: Cv): Observable<Cv> {
-    return this.http.post<any>(API.cv, cv);
+    return this.http.delete<any>(`${API.cv}${id}`);
   }
 
   /**
-   *
-   * Retourne un cv par son id de l'API
-   *
-   * @param id: number
-   * @returns CV[]
-   *
+   * Adds a new CV via the API.
+   * @param cv - The CV to add.
+   * @returns Observable<Cv>
+   */
+  addCv(cv: Cv): Observable<Cv> {
+    return this.http.post<Cv>(API.cv, cv);
+  }
+
+  /**
+   * Fetches a CV by its ID from the API.
+   * @param id - ID of the CV to fetch.
+   * @returns Observable<Cv>
    */
   getCvById(id: number): Observable<Cv> {
-    return this.http.get<Cv>(API.cv + id);
+    return this.http.get<any>(`${API.cv}${id}`);
   }
 
   /**
-   *
-   * Cherche un cv avec son id dans lai liste fictive de cvs
-   *
-   * @param id
+   * Finds a CV by ID in the local signal store.
+   * @param id - ID of the CV to find.
    * @returns Cv | null
    */
   findCvById(id: number): Cv | null {
-    return this.cvs.find((cv) => cv.id == id) ?? null;
+    return this.cvs().find((cv) => cv.id === id) ?? null;
   }
 
   /**
-   *
-   * Supprime un cv s'il le trouve
-   *
-   * @param cv : Cv
+   * Deletes a CV from the local signal store if found.
+   * @param cv - The CV to delete.
    * @returns boolean
    */
   deleteCv(cv: Cv): boolean {
-    const index = this.cvs.indexOf(cv);
+    const index = this.cvs().indexOf(cv);
     if (index > -1) {
-      this.cvs.splice(index, 1);
+      this.cvs.update((cvs) => cvs.filter((item) => item !== cv));
       return true;
     }
     return false;
   }
 
   /**
-   * Recherche les cvs dont le name contient la chaine name passée en paramètre
-   * @param name : string
-   * @returns cvs Cv[]
+   * Filters CVs by name from the API.
+   * @param name - Name to search for.
+   * @returns Observable<Cv[]>
    */
-  selectByName(name: string) {
+  selectByName(name: string): Observable<Cv[]> {
     const search = `{"where":{"name":{"like":"%${name}%"}}}`;
-    const params = new HttpParams().set("filter", search);
-    return this.http.get<any>(API.cv, { params });
-  }
-  /**
-   * Recherche les cvs dont la valeur est égale à la chaine passée en paramètre
-   * @param property : string, la propriété sur laquelle on va requeter
-   * @param value : string, la valeur de la propriété sur laquelle on va requeter
-   * @returns cvs Cv[]
-   */
-  selectByProperty(property: string, value: string) {
-    const search = `{"where":{"${property}":"${value}"}}`;
-    const params = new HttpParams().set("filter", search);
+    const params = new HttpParams().set('filter', search);
     return this.http.get<Cv[]>(API.cv, { params });
   }
 
   /**
-   * Permet d'ajouter un cv au flux des cvs sélectionnés
-   *
-   * @param cv : Le cv à ajouter dans le flux des cvs sélectionnés
+   * Filters CVs by a property-value pair from the API.
+   * @param property - The property to filter on.
+   * @param value - The value to match.
+   * @returns Observable<Cv[]>
    */
-  selectCv(cv: Cv) {
-    this.#selectCvSuject$.next(cv);
+  selectByProperty(property: string, value: string): Observable<Cv[]> {
+    const search = `{"where":{"${property}":"${value}"}}`;
+    const params = new HttpParams().set('filter', search);
+    return this.http.get<Cv[]>(API.cv, { params });
+  }
+
+  /**
+   * Selects a CV and updates the `selectedCv` signal.
+   * @param cv - The CV to select.
+   */
+  selectCv(cv: Cv): void {
+    this.selectedCv.set(cv);
+  }
+
+  /**
+   * Returns the currently selected CV signal.
+   * @returns Cv | null
+   */
+  getSelectedCv(): Cv | null {
+    return this.selectedCv();
+  }
+
+  /**
+   * Logs the current state of CVs.
+   */
+  logCvs(): void {
+    console.log(this.cvs());
   }
 }

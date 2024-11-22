@@ -1,36 +1,35 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Cv } from '../model/cv';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EmbaucheService {
-  private embauchees: Cv[] = [];
+  // Signal to hold the list of hired candidates
+  private embauchees = signal<Cv[]>([]);
 
   constructor() {}
 
   /**
-   *
-   * Retourne la liste des embauchees
-   *
-   * @returns CV[]
-   *
+   * Returns the list of hired candidates.
+   * @returns Cv[]
    */
   getEmbauchees(): Cv[] {
-    return this.embauchees;
+    return this.embauchees(); // Call the signal to get its value
   }
 
   /**
-   *
-   * Embauche une personne si elle ne l'est pas encore
-   * Sinon il retourne false
-   *
-   * @param cv : Cv
+   * Hires a person if they are not already hired.
+   * Otherwise, returns false.
+   * @param cv - Cv
    * @returns boolean
    */
   embauche(cv: Cv): boolean {
-    if (this.embauchees.indexOf(cv) == -1) {
-      this.embauchees.push(cv);
+    // Get the current value of the signal
+    const currentEmbauchees = this.embauchees();
+    if (!currentEmbauchees.includes(cv)) {
+      // Update the signal with the new value
+      this.embauchees.set([...currentEmbauchees, cv]);
       return true;
     }
     return false;
