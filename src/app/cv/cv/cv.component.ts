@@ -7,6 +7,8 @@ import { ListComponent } from "../list/list.component";
 import { CvCardComponent } from "../cv-card/cv-card.component";
 import { EmbaucheComponent } from "../embauche/embauche.component";
 import { UpperCasePipe, DatePipe } from "@angular/common";
+import { RouterModule } from '@angular/router';
+
 @Component({
     selector: "app-cv",
     templateUrl: "./cv.component.html",
@@ -18,6 +20,7 @@ import { UpperCasePipe, DatePipe } from "@angular/common";
         EmbaucheComponent,
         UpperCasePipe,
         DatePipe,
+        RouterModule,
     ],
 })
 export class CvComponent {
