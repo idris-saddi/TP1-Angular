@@ -17,6 +17,7 @@ export class TodoService {
    * @returns Todo[]
    */
   getTodos(): Todo[] {
+    console.log('todo loaded');
     return this.todos;
   }
 

@@ -14,21 +14,27 @@ import { DetailsCvComponent } from './cv/details-cv/details-cv.component';
 import { RhComponent } from './optimizationPattern/rh/rh.component';
 import { APP_ROUTES } from 'src/config/routes.config';
 import { ProductsComponent } from './products/products.component';
+import { CustomPreloadingStrategy } from './strategies/CustomPreload';
 
 const routes: Route[] = [
   { path: 'login', component: LoginComponent },
   { path: 'rh', component: RhComponent },
   {
     path: 'cv',
-    component: CvComponent,
+    loadChildren: () =>
+      import('./cv/cv-tech.module').then((m) => m.CvTechModule),
   },
-  { path: 'cv/add', component: AddCvComponent, canActivate: [AuthGuard] },
-  { path: 'cv/:id', component: DetailsCvComponent },
+
   {
     path: '',
     component: FrontComponent,
     children: [
-      { path: 'todo', component: TodoComponent },
+      {
+        path: 'todo',
+        loadChildren: () =>
+          import('./todo/todo.module').then((m) => m.TodoModule),
+        data: { preload: true },
+      },
       { path: 'word', component: MiniWordComponent },
     ],
   },
@@ -42,7 +48,11 @@ const routes: Route[] = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [
+    RouterModule.forRoot(routes, {
+      preloadingStrategy: CustomPreloadingStrategy,
+    }),
+  ],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}
