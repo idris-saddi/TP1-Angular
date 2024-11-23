@@ -14,7 +14,7 @@ import { DetailsCvComponent } from './cv/details-cv/details-cv.component';
 import { RhComponent } from './optimizationPattern/rh/rh.component';
 import { APP_ROUTES } from 'src/config/routes.config';
 import { ProductsComponent } from './products/products.component';
-import { CustomPreloadingStrategy } from './strategies/CustomPreload';
+import { CustomPreloadingStrategy } from './strategies/customPreload';
 
 const routes: Route[] = [
   { path: 'login', component: LoginComponent },
