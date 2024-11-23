@@ -6,7 +6,7 @@ import { DetailsCvComponent } from './details-cv/details-cv.component';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../auth/guards/auth.guard';
 
-const routes: Routes = [
+export const cvRoutes: Routes = [
   { path: '', component: CvComponent },
   { path: 'add', component: AddCvComponent, canActivate: [AuthGuard] },
   { path: ':id', component: DetailsCvComponent },
@@ -14,7 +14,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [],
-  imports: [RouterModule.forChild(routes)],
+  imports: [RouterModule.forChild(cvRoutes)],
   exports: [RouterModule],
 })
 export class CvModule {}

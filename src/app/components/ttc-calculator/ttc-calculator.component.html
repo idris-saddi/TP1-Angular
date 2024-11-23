@@ -1,40 +1,34 @@
 <div>
-    <h1>TTC Calculator</h1>
-    <div class="input-fields">
-      <div class="input-field">
-        <input
-          type="number"
-          name="ht"
-          placeholder="HT"
-          [value]="price()"
-          (input)="onPriceChange($event)"
-        />
-        <label for="ht">Prix HT</label>
-      </div>
-      <div class="input-field">
-        <input
-          type="number"
-          name="quantite"
-          placeholder="Quantité"
-          [value]="quantity()"
-          (input)="onQuantityChange($event)"
-        />
-        <label for="quantite">Quantité</label>
-      </div>
-      <div class="input-field">
-        <input
-          type="number"
-          name="tva"
-          [value]="tva()"
-          placeholder="TVA"
-          (input)="onTvaChange($event)"
-        />
-        <label for="tva">TVA</label>
-      </div>
+  <h1>TTC Calculator</h1>
+  <div class="input-fields">
+    <div class="input-field">
+      <input type="number" name="ht" placeholder="HT" [(ngModel)]="tva" />
+      <label for="ht">Prix HT</label>
     </div>
-    <div class="calculator">
-      <p>prix unitaire TTC : {{ unitPrice() }} TND</p>
-      <p>prix total TTC : {{ totalPrice() }} TND</p>
-      <p>discount : {{ discount() }} TND</p>
+    <div class="input-field">
+      <input
+        type="number"
+        name="quantite"
+        placeholder="Quantité"
+        [value]="quantity()"
+        (input)="onQuantityChange($event)"
+      />
+      <label for="quantite">Quantité</label>
+    </div>
+    <div class="input-field">
+      <input
+        type="number"
+        name="tva"
+        [value]="tva()"
+        placeholder="TVA"
+        (input)="onTvaChange($event)"
+      />
+      <label for="tva">TVA</label>
     </div>
   </div>
+  <div class="calculator">
+    <p>prix unitaire TTC : {{ unitPrice() }} TND</p>
+    <p>prix total TTC : {{ totalPrice() }} TND</p>
+    <p>discount : {{ discount() }} TND</p>
+  </div>
+</div>

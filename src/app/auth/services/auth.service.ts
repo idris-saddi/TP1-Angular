@@ -23,38 +23,36 @@ export class AuthService {
     }
   }
 
-  private userSignal = signal<UserLogin | null>(null);
-
+  private readonly userSignal = signal<UserLogin | null>(null);
+  user = this.userSignal.asReadonly();
   isAuthenticated = computed<boolean>(() => {
     const user = this.userSignal();
     return user !== null && user.token !== null;
-});
+  });
 
-userInfo = computed<UserInfo | null>(() => {
-  const user = this.userSignal();
-  return user ? { userId: user.userId, email: user.email } : null;
-});
+  userInfo = computed<UserInfo | null>(() => {
+    const user = this.userSignal();
+    return user ? { userId: user.userId, email: user.email } : null;
+  });
 
+  login(credentials: CredentialsDto): Observable<UserLogin> {
+    return this.http.post<LoginResponseDto>(API.login, credentials).pipe(
+      map((response) => {
+        const user: UserLogin = {
+          token: response.id,
+          created: response.created,
+          ttl: response.ttl,
+          userId: response.userId,
+          email: credentials.email,
+        };
 
-login(credentials: CredentialsDto): Observable<UserLogin> {
-  return this.http.post<LoginResponseDto>(API.login, credentials).pipe(
-    map((response) => {
-      const user: UserLogin = {
-        token: response.id,
-        created: response.created,
-        ttl: response.ttl,
-        userId: response.userId,
-        email: credentials.email,
-      };
+        this.userSignal.set(user);
+        localStorage.setItem(CONSTANTES.user_key, JSON.stringify(user));
 
-      this.userSignal.set(user);
-      localStorage.setItem(CONSTANTES.user_key, JSON.stringify(user));
-
-      return user; // Return the transformed user object
-    })
-  );
-}
-
+        return user; // Return the transformed user object
+      })
+    );
+  }
 
   logout() {
     this.userSignal.set(null);

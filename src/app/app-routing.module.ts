@@ -11,7 +11,7 @@ export const routes: Routes = [
   },
   {
     path: 'cv',
-    loadChildren: () => import('./cv/cv.module').then((m) => m.CvModule),
+    loadChildren: () => import('./cv/cv.module').then((m) => m.cvRoutes),
   },
   {
     path: 'rh',
@@ -68,9 +68,3 @@ export const routes: Routes = [
       ),
   },
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule],
-})
-export class AppRoutingModule {}
