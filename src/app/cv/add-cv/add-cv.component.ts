@@ -24,10 +24,15 @@ export class AddCvComponent {
   private toastr = inject(ToastrService);
   private formBuilder = inject(FormBuilder);
 
-  /** Inserted by Angular inject() migration for backwards compatibility */
-  constructor(...args: unknown[]);
-
-  constructor() {}
+  constructor() {
+    this.form.get("age")?.valueChanges.subscribe((age) => {
+      if (age !== null && age < 18) {
+        this.form.get("path")?.disable();
+      } else {
+        this.form.get("path")?.enable();
+      }
+    });
+  }
 
   form = this.formBuilder.group(
     {
