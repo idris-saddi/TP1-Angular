@@ -9,6 +9,7 @@ import { Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { APP_ROUTES } from "src/config/routes.config";
 import { Cv } from "../model/cv";
+import { uniqueCinValidator } from "../validators/unique-cin-validator";
 
 @Component({
   selector: "app-add-cv",
@@ -21,7 +22,15 @@ export class AddCvComponent {
     private router: Router,
     private toastr: ToastrService,
     private formBuilder: FormBuilder
-  ) {}
+  ) {
+    this.form.get("age")?.valueChanges.subscribe((age) => {
+      if (age !== null && age < 18) {
+        this.form.get("path")?.disable();
+      } else {
+        this.form.get("path")?.enable();
+      }
+    });
+  }
 
   form = this.formBuilder.group(
     {
@@ -32,7 +41,7 @@ export class AddCvComponent {
       cin: [
         "",
         {
-          validators: [Validators.required, Validators.pattern("[0-9]{8}")],
+          validators: [Validators.required, Validators.pattern("[0-9]{8}"),uniqueCinValidator(this.cvService)],
         },
       ],
       age: [
@@ -56,6 +65,7 @@ export class AddCvComponent {
         );
       },
     });
+
   }
 
   get name(): AbstractControl {
