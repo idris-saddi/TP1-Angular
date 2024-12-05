@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Cv } from "../model/cv";
-import { Observable, Subject } from "rxjs";
+import { map, Observable, of, Subject, tap } from "rxjs";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { API } from "../../../config/api.config";
 import { ValidationErrors } from "@angular/forms";
@@ -134,15 +134,12 @@ export class CvService {
   }
 
   findUserByCin(value: any): Observable<ValidationErrors | null> {
-    return new Observable<ValidationErrors | null>( (observer) => {
-      const cv = this.cvs.find(cv => cv.cin === value);
-      
-      if (cv) {
-        observer.next({ userExists: true });//return error cv with same cin exists
-      } else {
-        observer.next(null);
-      }
-    }
-    ); 
+    return this.getCvs().pipe(
+      map((cvs) => {
+        const cinValue = value.trim().toString();  
+        const cv = cvs.find((cv) => cv.cin.toString().trim() === cinValue); 
+        return cv ? { userExists: true } : null;
+      })
+    );
   }
 }

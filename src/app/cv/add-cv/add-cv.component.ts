@@ -16,7 +16,7 @@ import { uniqueCinValidator } from "../validators/unique-cin-validator";
   templateUrl: "./add-cv.component.html",
   styleUrls: ["./add-cv.component.css"],
 })
-export class AddCvComponent {
+export class AddCvComponent{
   constructor(
     private cvService: CvService,
     private router: Router,
@@ -41,7 +41,9 @@ export class AddCvComponent {
       cin: [
         "",
         {
-          validators: [Validators.required, Validators.pattern("[0-9]{8}"),uniqueCinValidator(this.cvService)],
+          validators: [Validators.required, Validators.pattern("[0-9]{8}")],
+          asyncValidators : [uniqueCinValidator(this.cvService)],
+          updateOn: 'blur'
         },
       ],
       age: [
@@ -52,7 +54,7 @@ export class AddCvComponent {
       ],
     },
   );
-
+  
   addCv() {
     this.cvService.addCv(this.form.value as Cv).subscribe({
       next: (cv) => {

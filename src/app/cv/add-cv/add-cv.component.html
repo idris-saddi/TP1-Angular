@@ -14,7 +14,7 @@
   <input type="text" class="form-control" formControlName="cin" />
   <div
     *ngIf="
-      form.errors && form.errors['cinFirstCars'] && cin?.touched && age?.touched
+      cin?.touched && age?.touched && cin?.errors?.['userExists']
     "
     class="alert alert-danger"
   >
