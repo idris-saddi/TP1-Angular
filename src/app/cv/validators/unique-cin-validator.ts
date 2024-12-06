@@ -4,14 +4,25 @@ import { catchError, debounceTime, distinctUntilChanged, of, switchMap } from "r
 
 export function uniqueCinValidator(cvService: CvService): AsyncValidatorFn {
   return (control: AbstractControl) => {
-    return control.valueChanges.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap((value) => 
-        cvService.findUserByCin(value).pipe(
-          catchError(() => of(null))
-        )
-      )
+    return cvService.findUserByCin(control.value).pipe(
+      catchError(() => of(null))
     );
   };
+
+  // return (control: AbstractControl) => {  
+  //   return control.valueChanges.pipe(
+  //     debounceTime(300),
+  //     distinctUntilChanged(),
+  //     switchMap((value) => {
+  //       console.log('Checking CIN:', value);
+  //       return cvService.findUserByCin(value).pipe(
+  //         catchError(() => of(null))
+  //       );
+  //     })
+  //   );
+  // };
+  
+  
 }
+
+

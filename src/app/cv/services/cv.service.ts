@@ -138,6 +138,7 @@ export class CvService {
       map((cvs) => {
         const cinValue = value.trim().toString();  
         const cv = cvs.find((cv) => cv.cin.toString().trim() === cinValue); 
+        console.log('CIN check:', cinValue, 'Found:', cv);
         return cv ? { userExists: true } : null;
       })
     );

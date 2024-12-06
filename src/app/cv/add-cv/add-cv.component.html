@@ -13,12 +13,19 @@
   <input type="text" class="form-control" formControlName="age" /> Cin:
   <input type="text" class="form-control" formControlName="cin" />
   <div
+  *ngIf="form.errors?.['cinFirstChars'] && (cin?.touched || age?.touched)
+  "
+  class="alert alert-danger"
+>
+  {{ form.errors?.['cinFirstChars'] }}
+</div>
+  <div
     *ngIf="
-      cin?.touched && age?.touched && cin?.errors?.['userExists']
+      cin?.touched && cin?.errors?.['userExists']
     "
     class="alert alert-danger"
   >
-    Cette Cin est invalide
+    Cette Cin existe deja 
   </div>
   Job: <input type="text" class="form-control" formControlName="job" /> Path:
   <input type="text" class="form-control" formControlName="path" />
