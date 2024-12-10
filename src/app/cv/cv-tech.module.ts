@@ -7,8 +7,8 @@ import { AuthGuard } from '../auth/guards/auth.guard';
 
 const routes: Routes = [
   { path: '', component: CvComponent },
-  { path: 'cv/add', component: AddCvComponent, canActivate: [AuthGuard] },
-  { path: 'cv/:id', component: DetailsCvComponent },
+  { path: 'add', component: AddCvComponent, canActivate: [AuthGuard] },
+  { path: ':id', component: DetailsCvComponent },
 ];
 
 @NgModule({
