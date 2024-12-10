@@ -27,17 +27,16 @@ export class RhComponent implements OnInit {
   }
 
   addUser(list: User[], newUser: string) {
-    // Add the user to the correct list
+
     this.userService.addUser(list, newUser);
 
-    // After adding the user, update the chart data
+
     if (list === this.oddUsers) {
-      this.chart.data.datasets[0].data[0] = this.oddUsers.length; // Update workers count
+      this.chart.data.datasets[0].data[0] = this.oddUsers.length; 
     } else if (list === this.evenUsers) {
-      this.chart.data.datasets[0].data[1] = this.evenUsers.length; // Update boss count
+      this.chart.data.datasets[0].data[1] = this.evenUsers.length;
     }
 
-    // Update the chart
     this.chart.update();
   }
 

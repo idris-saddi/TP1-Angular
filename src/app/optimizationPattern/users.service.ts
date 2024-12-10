@@ -33,7 +33,6 @@ export class UsersService {
 
     list.unshift(newUser);
 
-    // Also add the new user to the main users list to keep it updated
     this.users.unshift(newUser);
   }
 }
