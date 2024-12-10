@@ -2,36 +2,47 @@
 <form [formGroup]="form">
   Name:
   <input type="text" class="form-control" formControlName="name" />
-  <div
-    *ngIf="form.get('name')?.errors && form.get('name')?.touched"
-    class="alert alert-danger"
-  >
-    Ce champ est obligatoire
+  <div *ngIf="form.get('name')?.errors?.['required'] && form.get('name')?.touched" class="alert alert-danger">
+    Ce champ est obligatoire.
   </div>
+
   Firstname:
-  <input type="text" class="form-control" formControlName="firstname" /> Age:
-  <input type="text" class="form-control" formControlName="age" /> Cin:
-  <input type="text" class="form-control" formControlName="cin" />
-  <div
-  *ngIf="form.errors?.['cinFirstChars'] && (cin?.touched || age?.touched)
-  "
-  class="alert alert-danger"
->
-  {{ form.errors?.['cinFirstChars'] }}
-</div>
-  <div
-    *ngIf="
-      cin?.touched && cin?.errors?.['userExists']
-    "
-    class="alert alert-danger"
-  >
-    Cette Cin existe deja 
+  <input type="text" class="form-control" formControlName="firstname" />
+
+  Age:
+  <input type="text" class="form-control" formControlName="age" />
+  <div *ngIf="form.get('age')?.errors?.['required'] && form.get('age')?.touched" class="alert alert-danger">
+    L'âge est obligatoire.
   </div>
-  Job: <input type="text" class="form-control" formControlName="job" /> Path:
+  <div *ngIf="form.get('age')?.errors?.['min'] && form.get('age')?.touched" class="alert alert-danger">
+    L'âge doit être supérieur à 1.
+  </div>
+  <div *ngIf="form.get('age')?.errors?.['max'] && form.get('age')?.touched" class="alert alert-danger">
+    L'âge doit être inférieur ou égal à 100.
+  </div>
+
+  Cin:
+  <input type="text" class="form-control" formControlName="cin" />
+  <div *ngIf="cin?.touched && cin?.errors?.['userExists']" class="alert alert-danger">
+    Cette CIN existe déjà.
+  </div>
+  <div *ngIf="cin?.errors?.['pattern'] && cin?.touched" class="alert alert-danger">
+    CIN doit contenir exactement 8 chiffres.
+  </div>
+  <div *ngIf="cin?.errors?.['required'] && cin?.touched" class="alert alert-danger">
+    CIN est obligatoire.
+  </div>
+  <div *ngIf="form.errors?.['cinFirstChars'] && (cin?.touched || age?.touched)" class="alert alert-danger">
+    {{ form.errors?.['cinFirstChars'] }}
+  </div>
+
+  Job:
+  <input type="text" class="form-control" formControlName="job" />
+
+  Path:
   <input type="text" class="form-control" formControlName="path" />
 
   <button [disabled]="form.invalid" class="btn btn-primary" (click)="addCv()">
-    add cv
+    Ajouter CV
   </button>
 </form>
-{{ form.errors | json }}

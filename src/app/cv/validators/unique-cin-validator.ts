@@ -1,28 +1,19 @@
-import { AbstractControl, AsyncValidatorFn} from "@angular/forms";
-import { CvService } from "../services/cv.service";
-import { catchError, debounceTime, distinctUntilChanged, of, switchMap } from "rxjs";
+import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
+import { CvService } from '../services/cv.service';
+import { catchError, debounceTime, distinctUntilChanged, map, of, switchMap } from 'rxjs';
 
 export function uniqueCinValidator(cvService: CvService): AsyncValidatorFn {
   return (control: AbstractControl) => {
+    // If the field is empty, return null (valid)
+    if (!control.value) {
+      return of(null);
+    }
+
     return cvService.findUserByCin(control.value).pipe(
-      catchError(() => of(null))
+      debounceTime(300), // Wait for 300ms after the last keystroke
+      distinctUntilChanged(), // Avoid duplicate API calls with identical values
+      map((userExists) => (userExists ? { userExists: true } : null)), // Return the validation error if the user exists
+      catchError(() => of(null)) // Handle errors from the API gracefully
     );
   };
-
-  // return (control: AbstractControl) => {  
-  //   return control.valueChanges.pipe(
-  //     debounceTime(300),
-  //     distinctUntilChanged(),
-  //     switchMap((value) => {
-  //       console.log('Checking CIN:', value);
-  //       return cvService.findUserByCin(value).pipe(
-  //         catchError(() => of(null))
-  //       );
-  //     })
-  //   );
-  // };
-  
-  
 }
-
-

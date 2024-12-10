@@ -14,7 +14,6 @@ export function cinAgeValidator(): ValidatorFn {
     if (age < 60 && firstTwoDigits <= 19) {
       return { cinFirstChars: 'For age < 60, first two CIN digits must be > 19.' };
     }
-
     return null;
   };
 }
