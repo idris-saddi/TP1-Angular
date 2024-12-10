@@ -140,7 +140,7 @@ export class CvService {
         const cv = cvs.find((cv) => cv.cin.toString().trim() === cinValue); 
         console.log('CIN check:', cinValue, 'Found:', cv);
           
-        return cv==null ? null : { userExists: false };
+        return cv ?  { userExists: false } : null ;
       })
     );
   }
