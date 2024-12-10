@@ -9,19 +9,30 @@ import { Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { APP_ROUTES } from "src/config/routes.config";
 import { Cv } from "../model/cv";
+import { uniqueCinValidator } from "../validators/unique-cin-validator";
+import { cinAgeValidator} from "../validators/age-cin-validator";
 
 @Component({
   selector: "app-add-cv",
   templateUrl: "./add-cv.component.html",
   styleUrls: ["./add-cv.component.css"],
 })
-export class AddCvComponent {
+export class AddCvComponent{
   constructor(
     private cvService: CvService,
     private router: Router,
     private toastr: ToastrService,
     private formBuilder: FormBuilder
-  ) {}
+  ) {
+    this.form.get("age")?.valueChanges.subscribe((age) => {
+      if (age !== null && age < 18) {
+        this.form.get("path")?.disable();
+      } else {
+        this.form.get("path")?.enable();
+      }
+    });
+
+  }
 
   form = this.formBuilder.group(
     {
@@ -29,21 +40,23 @@ export class AddCvComponent {
       firstname: ["", Validators.required],
       path: [""],
       job: ["", Validators.required],
-      cin: [
-        "",
-        {
-          validators: [Validators.required, Validators.pattern("[0-9]{8}")],
-        },
-      ],
       age: [
         0,
         {
           validators: [Validators.required],
         },
       ],
+      cin: [
+        "",
+        {
+          validators: [Validators.required, Validators.pattern("[0-9]{8}")],
+          asyncValidators : [uniqueCinValidator(this.cvService)],
+        },
+      ],
     },
+    { validators: [cinAgeValidator()] } // group level validator if relationship involves multiple fields
   );
-
+  
   addCv() {
     this.cvService.addCv(this.form.value as Cv).subscribe({
       next: (cv) => {
@@ -56,7 +69,9 @@ export class AddCvComponent {
         );
       },
     });
+
   }
+  
 
   get name(): AbstractControl {
     return this.form.get("name")!;
