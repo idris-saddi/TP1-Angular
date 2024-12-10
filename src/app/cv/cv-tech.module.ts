@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { CvComponent } from './cv/cv.component';
 import { AddCvComponent } from './add-cv/add-cv.component';
